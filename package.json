@@ -43,6 +43,7 @@
   },
   "dependencies": {
     "dotenv": "^10.0.0",
+    "sipgateio": "^2.5.5",
     "ts-node": "^10.4.0"
   }
 }

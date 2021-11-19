@@ -8,6 +8,7 @@
     "plugin:@typescript-eslint/recommended"
   ],
   "rules": {
+    "no-shadow": "off",
     "import/order": [
       "error",
       {
