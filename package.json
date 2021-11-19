@@ -1,7 +1,7 @@
 {
-  "name": "sipgateio-boilerplate",
+  "name": "io-labs-complex-ivr",
   "version": "1.0.0",
-  "description": "A template for new sipgate.io projects containing Prettier, ESLint, Husky and TypeScript configuration files",
+  "description": "",
   "main": "src/index.ts",
   "scripts": {
     "start": "ts-node .",
@@ -14,14 +14,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/sipgate-io/sipgateio-boilerplate.git"
+    "url": "git+ssh://git@github.com/sipgate-io/io-labs-complex-ivr.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/sipgate-io/sipgateio-boilerplate/issues"
+    "url": "https://github.com/sipgate-io/io-labs-complex-ivr/issues"
   },
-  "homepage": "https://github.com/sipgate-io/sipgateio-boilerplate#readme",
+  "homepage": "https://github.com/sipgate-io/io-labs-complex-ivr#readme",
   "devDependencies": {
     "@types/jest": "^27.0.2",
     "@types/node": "^16.11.6",
