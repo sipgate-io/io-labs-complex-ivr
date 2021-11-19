@@ -9,8 +9,9 @@ const maxRequestDTMFInputLength = 1;
 enum CallStage {
   WELCOMESTAGE,
   REQUESTSTAGE,
+  ENDSTAGE,
 }
-let stage = CallStage.WELCOMESTAGE;
+let stage = CallStage.REQUESTSTAGE;
 
 if (!process.env.SIPGATE_WEBHOOK_SERVER_ADDRESS) {
   console.error(
@@ -21,19 +22,15 @@ if (!process.env.SIPGATE_WEBHOOK_SERVER_ADDRESS) {
 
 const serverAddress = process.env.SIPGATE_WEBHOOK_SERVER_ADDRESS;
 
-console.log("Das ist die Serveradresse");
-console.log(serverAddress);
-
 createWebhookModule()
   .createServer({
     port,
     serverAddress,
   })
   .then((webhookServer) => {
-    console.log("Das ist der Webhookserver");
-    console.log(webhookServer);
     webhookServer.onNewCall((newCallEvent) => {
       console.log(`New call from ${newCallEvent.from} to ${newCallEvent.to}`);
+      stage = CallStage.WELCOMESTAGE;
       return WebhookResponse.gatherDTMF({
         maxDigits: maxWelcomeDTMFInputLength,
         timeout: 5000,
@@ -44,16 +41,12 @@ createWebhookModule()
 
     webhookServer.onData((dataEvent) => {
       const selection = dataEvent.dtmf;
-      console.log("Provided dtmf: ");
-      console.log(selection);
-      console.log("Stage: ");
-      console.log(stage);
 
       if (
         stage === CallStage.WELCOMESTAGE
         && selection.length === maxWelcomeDTMFInputLength
       ) {
-        console.log(`The caller provided a valid id ${selection} `);
+        console.log(`The caller provided a valid id: ${selection} `);
         stage = CallStage.REQUESTSTAGE;
         return WebhookResponse.gatherDTMF({
           maxDigits: maxRequestDTMFInputLength,
@@ -67,15 +60,28 @@ createWebhookModule()
         stage === CallStage.REQUESTSTAGE
         && selection.length === maxRequestDTMFInputLength
       ) {
-        if (selection === "1") {
-          console.log("Ausgabe 1");
-        } else if (selection === "2") {
-          console.log("Ausgabe 2");
-        } else {
-          console.log("Falsche Nummer angegeben");
+        stage = CallStage.ENDSTAGE;
+        switch (selection) {
+          case "1":
+            console.log("Ausgabe 1");
+            return WebhookResponse.gatherDTMF({
+              maxDigits: 1,
+              timeout: 0,
+              announcement:
+                "https://github.com/sipgate-io/sipgateio-node-examples/blob/main/static/testfile.wav?raw=true",
+            });
+          case "2":
+            console.log("Ausgabe 2");
+            return WebhookResponse.gatherDTMF({
+              maxDigits: 1,
+              timeout: 0,
+              announcement:
+                "https://github.com/sipgate-io/sipgateio-node-examples/blob/main/static/testfile.wav?raw=true",
+            });
+          default:
+            return WebhookResponse.hangUpCall();
         }
       }
-      stage = CallStage.WELCOMESTAGE;
       return WebhookResponse.hangUpCall();
     });
   });
