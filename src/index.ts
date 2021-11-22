@@ -10,7 +10,6 @@ enum CallStage {
   REQUESTSTAGE,
   ENDSTAGE,
 }
-let stage = CallStage.REQUESTSTAGE;
 
 if (!process.env.SIPGATE_WEBHOOK_SERVER_ADDRESS) {
   console.error(
@@ -35,6 +34,7 @@ createWebhookModule()
     serverAddress: SERVER_ADDRESS,
   })
   .then((webhookServer) => {
+    let stage = CallStage.REQUESTSTAGE;
     webhookServer.onNewCall((newCallEvent) => {
       console.log(`New call from ${newCallEvent.from} to ${newCallEvent.to}`);
       stage = CallStage.WELCOMESTAGE;
