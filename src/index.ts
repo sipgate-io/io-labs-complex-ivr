@@ -14,7 +14,7 @@ let stage = CallStage.REQUESTSTAGE;
 
 if (!process.env.SIPGATE_WEBHOOK_SERVER_ADDRESS) {
   console.error(
-    "ERROR: You need to set a server address for the followup webhook events!\n",
+    "ERROR: You need to set a server address to receive webhook events!\n",
   );
   process.exit();
 }
