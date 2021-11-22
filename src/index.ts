@@ -77,7 +77,7 @@ createWebhookModule()
               announcement:
                 "https://github.com/sipgate-io/sipgateio-node-examples/blob/main/static/testfile.wav?raw=true",
             });
-          case "2":
+          case "3":
             console.log("Ausgabe 2");
             return WebhookResponse.gatherDTMF({
               maxDigits: 1,
