@@ -59,7 +59,7 @@ createWebhookModule()
           maxDigits: MAX_REQUEST_DTMF_INPUT_LENGTH,
           timeout: 5000,
           announcement:
-            "https://github.com/sipgate-io/sipgateio-node-examples/blob/main/static/example.wav?raw=true",
+            "https://github.com/sipgate-io/io-labs-complex-ivr/blob/main/static/request.wav?raw=true",
         });
       }
 
@@ -75,7 +75,7 @@ createWebhookModule()
               maxDigits: 1,
               timeout: 0,
               announcement:
-                "https://github.com/sipgate-io/sipgateio-node-examples/blob/main/static/testfile.wav?raw=true",
+                "https://github.com/sipgate-io/io-labs-complex-ivr/blob/main/static/credit.wav?raw=true",
             });
           case "3":
             console.log("Ausgabe 2");
@@ -83,7 +83,7 @@ createWebhookModule()
               maxDigits: 1,
               timeout: 0,
               announcement:
-                "https://github.com/sipgate-io/sipgateio-node-examples/blob/main/static/testfile.wav?raw=true",
+                "https://github.com/sipgate-io/io-labs-complex-ivr/blob/main/static/customerservice.wav?raw=true",
             });
           default:
             return WebhookResponse.hangUpCall();
