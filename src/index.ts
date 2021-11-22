@@ -35,7 +35,7 @@ createWebhookModule()
         maxDigits: maxWelcomeDTMFInputLength,
         timeout: 5000,
         announcement:
-          "https://github.com/sipgate-io/sipgateio-node-examples/blob/main/static/example.wav?raw=true",
+          "https://github.com/sipgate-io/io-labs-complex-ivr/blob/main/static/welcome.wav?raw=true",
       });
     });
 
