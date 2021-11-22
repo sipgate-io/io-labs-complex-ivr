@@ -3,9 +3,8 @@ import { createWebhookModule, WebhookResponse } from "sipgateio";
 
 dotenv.config();
 
-const port = 8080;
-const maxWelcomeDTMFInputLength = 8;
-const maxRequestDTMFInputLength = 1;
+const MAX_WELCOME_DTMF_INPUT_LENGTH = 8;
+const MAX_REQUEST_DTMF_INPUT_LENGTH = 1;
 enum CallStage {
   WELCOMESTAGE,
   REQUESTSTAGE,
@@ -20,19 +19,27 @@ if (!process.env.SIPGATE_WEBHOOK_SERVER_ADDRESS) {
   process.exit();
 }
 
-const serverAddress = process.env.SIPGATE_WEBHOOK_SERVER_ADDRESS;
+if (!process.env.SIPGATE_WEBHOOK_SERVER_PORT) {
+  console.error(
+    "ERROR: You need to set a server port to receive webhook events!\n",
+  );
+  process.exit();
+}
+
+const SERVER_ADDRESS = process.env.SIPGATE_WEBHOOK_SERVER_ADDRESS;
+const PORT = process.env.SIPGATE_WEBHOOK_SERVER_PORT;
 
 createWebhookModule()
   .createServer({
-    port,
-    serverAddress,
+    port: PORT,
+    serverAddress: SERVER_ADDRESS,
   })
   .then((webhookServer) => {
     webhookServer.onNewCall((newCallEvent) => {
       console.log(`New call from ${newCallEvent.from} to ${newCallEvent.to}`);
       stage = CallStage.WELCOMESTAGE;
       return WebhookResponse.gatherDTMF({
-        maxDigits: maxWelcomeDTMFInputLength,
+        maxDigits: MAX_WELCOME_DTMF_INPUT_LENGTH,
         timeout: 5000,
         announcement:
           "https://github.com/sipgate-io/io-labs-complex-ivr/blob/main/static/welcome.wav?raw=true",
@@ -44,12 +51,12 @@ createWebhookModule()
 
       if (
         stage === CallStage.WELCOMESTAGE
-        && selection.length === maxWelcomeDTMFInputLength
+        && selection.length === MAX_WELCOME_DTMF_INPUT_LENGTH
       ) {
         console.log(`The caller provided a valid id: ${selection} `);
         stage = CallStage.REQUESTSTAGE;
         return WebhookResponse.gatherDTMF({
-          maxDigits: maxRequestDTMFInputLength,
+          maxDigits: MAX_REQUEST_DTMF_INPUT_LENGTH,
           timeout: 5000,
           announcement:
             "https://github.com/sipgate-io/sipgateio-node-examples/blob/main/static/example.wav?raw=true",
@@ -58,7 +65,7 @@ createWebhookModule()
 
       if (
         stage === CallStage.REQUESTSTAGE
-        && selection.length === maxRequestDTMFInputLength
+        && selection.length === MAX_REQUEST_DTMF_INPUT_LENGTH
       ) {
         stage = CallStage.ENDSTAGE;
         switch (selection) {
