@@ -34,10 +34,10 @@ createWebhookModule()
     serverAddress: SERVER_ADDRESS,
   })
   .then((webhookServer) => {
-    let stage = CallStage.REQUESTSTAGE;
+    const stage = new Map<string, CallStage>();
     webhookServer.onNewCall((newCallEvent) => {
+      stage.set(newCallEvent.callId, CallStage.WELCOMESTAGE);
       console.log(`New call from ${newCallEvent.from} to ${newCallEvent.to}`);
-      stage = CallStage.WELCOMESTAGE;
       return WebhookResponse.gatherDTMF({
         maxDigits: MAX_WELCOME_DTMF_INPUT_LENGTH,
         timeout: 5000,
@@ -48,13 +48,13 @@ createWebhookModule()
 
     webhookServer.onData((dataEvent) => {
       const selection = dataEvent.dtmf;
-
+      const callerId = dataEvent.callId;
       if (
-        stage === CallStage.WELCOMESTAGE
+        stage.get(callerId) === CallStage.WELCOMESTAGE
         && selection.length === MAX_WELCOME_DTMF_INPUT_LENGTH
       ) {
         console.log(`The caller provided a valid id: ${selection} `);
-        stage = CallStage.REQUESTSTAGE;
+        stage.set(callerId, CallStage.REQUESTSTAGE);
         return WebhookResponse.gatherDTMF({
           maxDigits: MAX_REQUEST_DTMF_INPUT_LENGTH,
           timeout: 5000,
@@ -64,10 +64,10 @@ createWebhookModule()
       }
 
       if (
-        stage === CallStage.REQUESTSTAGE
+        stage.get(callerId) === CallStage.REQUESTSTAGE
         && selection.length === MAX_REQUEST_DTMF_INPUT_LENGTH
       ) {
-        stage = CallStage.ENDSTAGE;
+        stage.set(callerId, CallStage.ENDSTAGE);
         switch (selection) {
           case "1":
             console.log("Ausgabe 1");
