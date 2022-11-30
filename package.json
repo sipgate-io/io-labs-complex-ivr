@@ -7,7 +7,7 @@
     "start": "ts-node .",
     "fix:lint": "eslint src --ext .ts,.js --fix",
     "fix:format": "prettier --write .",
-    "prepare": "husky install",
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",
